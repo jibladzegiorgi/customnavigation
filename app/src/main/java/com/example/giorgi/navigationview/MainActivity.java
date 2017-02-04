@@ -3,10 +3,11 @@ package com.example.giorgi.navigationview;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,45 +15,113 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout mDrawerLayout;
-    private DrawerLayout.DrawerListener mDrawerToggle;
-    private Toolbar toolbar;
-    float x = 0;
-    float x_1 = 0;
+    Animation animation_first;
+    Animation animation_two;
+    LinearLayout humburger_1;
+    LinearLayout humburger_2;
+    LinearLayout humburger_3;
+    LinearLayout humburger_4;
+    Animation test;
+    boolean isShow = false;
+    Animation fadein;
+    Animation rotateback;
+    int l;
+    Animation rotatetwoback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
         final LinearLayout linearLayout = (LinearLayout) findViewById(R.id.RecyclerView);
+        RelativeLayout humburger = (RelativeLayout) findViewById(R.id.humburger_main);
         final RelativeLayout linearLayout2 = (RelativeLayout) findViewById(R.id.linear);
-        Button button = (Button) findViewById(R.id.btn1);
+        final RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.DrawerLayout);
         Button button2 = (Button) findViewById(R.id.btn2);
+        humburger_1 = (LinearLayout) findViewById(R.id.humburger_1);
+        humburger_2 = (LinearLayout) findViewById(R.id.humburger_2);
+        humburger_3 = (LinearLayout) findViewById(R.id.humburger_3);
+        humburger_4 = (LinearLayout) findViewById(R.id.humburger_4);
+        test = AnimationUtils.loadAnimation(this, R.anim.test);
+        animation_first = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+        animation_two = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotatetwo);
+        fadein = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        rotateback = AnimationUtils.loadAnimation(this, R.anim.rotateback);
+        rotatetwoback = AnimationUtils.loadAnimation(this, R.anim.rotatetwoback);
 
-        button.setOnClickListener(new View.OnClickListener() {
+
+  /*      humburger.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "click_1", Toast.LENGTH_SHORT).show();
+                if (!isShow) {
+                    humburger_4.startAnimation(test);
+                    humburger_3.startAnimation(test);
+                    humburger_1.startAnimation(animation_first);
+                    humburger_2.startAnimation(animation_two);
+                    isShow = true;
+                } else {
+                    humburger_4.startAnimation(fadein);
+                    humburger_3.startAnimation(fadein);
+                    humburger_1.startAnimation(rotateback);
+                    humburger_2.startAnimation(rotatetwoback);
+                    isShow = false;
+                }
+            }
+        });*/
+
+
+        humburger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isShow) {
+                    l = mainLayout.getMeasuredWidth();
+                    final ObjectAnimator oa_y = ObjectAnimator.ofFloat(linearLayout2, "y", (float) (l * 0.08));
+                    final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout2, "x", -(float) ((l) * 0.70));
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.playTogether(oa, oa_y);
+                    animatorSet.start();
+                    humburger_4.startAnimation(test);
+                    humburger_3.startAnimation(test);
+                    humburger_1.startAnimation(animation_first);
+                    humburger_2.startAnimation(animation_two);
+                    isShow=true;
+
+                } else {
+                    final ObjectAnimator oa_y = ObjectAnimator.ofFloat(linearLayout2, "y", 0);
+                    final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout2, "x", 0);
+                    AnimatorSet animatorSet = new AnimatorSet();
+                    animatorSet.playTogether(oa, oa_y);
+                    animatorSet.start();
+                    humburger_4.startAnimation(fadein);
+                    humburger_3.startAnimation(fadein);
+                    humburger_1.startAnimation(rotateback);
+                    humburger_2.startAnimation(rotatetwoback);
+                    isShow=false;
+                }
             }
         });
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "click_2", Toast.LENGTH_SHORT).show();
-            }
-        });
 
-
-        linearLayout.setOnTouchListener(new OnSwipeTouchListener() {
+        mainLayout.setOnTouchListener(new OnSwipeTouchListener() {
             @Override
             public void onSwipeLeft() {
+                l = mainLayout.getMeasuredWidth();
                 Toast.makeText(MainActivity.this, "left", Toast.LENGTH_SHORT).show();
-                final ObjectAnimator oa_y = ObjectAnimator.ofFloat(linearLayout2, "y", 200);
-                final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout2, "x", -200);
+                final ObjectAnimator oa_y = ObjectAnimator.ofFloat(linearLayout2, "y", (float) (l * 0.08));
+                final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout2, "x", -(float) ((l) * 0.70));
                 AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playTogether(oa,oa_y);
+                animatorSet.playTogether(oa, oa_y);
+
+                if (!isShow) {
+                    humburger_4.startAnimation(test);
+                    humburger_3.startAnimation(test);
+                    humburger_1.startAnimation(animation_first);
+                    humburger_2.startAnimation(animation_two);
+                    isShow = true;
+                }
                 animatorSet.start();
                 super.onSwipeLeft();
             }
@@ -63,52 +132,18 @@ public class MainActivity extends AppCompatActivity {
                 final ObjectAnimator oa_y = ObjectAnimator.ofFloat(linearLayout2, "y", 0);
                 final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout2, "x", 0);
                 AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playTogether(oa,oa_y);
+                animatorSet.playTogether(oa, oa_y);
+                if (isShow){
+                    humburger_4.startAnimation(fadein);
+                    humburger_3.startAnimation(fadein);
+                    humburger_1.startAnimation(rotateback);
+                    humburger_2.startAnimation(rotatetwoback);
+                    isShow = false;
+                }
                 animatorSet.start();
                 super.onSwipeRight();
             }
         });
-
-//        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-//        setSupportActionBar(toolbar);
-
-
-//        final DrawerLayout Drawer = (DrawerLayout) findViewById(R.id.DrawerLayout);        // Drawer object Assigned to the view
-//        mDrawerToggle = new ActionBarDrawerToggle(this, Drawer, toolbar, R.string.app_name, R.string.app_name) {
-//
-//
-//            @Override
-//            public void onDrawerSlide(View drawerView, float slideOffset) {
-//                if (x == 0) {
-//                    x = drawerView.getX();
-//                } else {
-//                    x_1 = x-drawerView.getX();
-//
-//                    final ObjectAnimator oa = ObjectAnimator.ofFloat(linearLayout, "x", -x_1)
-//                            .setDuration(0);
-//                    oa.start();
-//                }
-//                super.onDrawerSlide(drawerView, slideOffset);
-//            }
-//
-//
-//            @Override
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-//                // code here will execute once the drawer is opened( As I dont want anything happened whe drawer is
-//                // open I am not going to put anything here)
-//            }
-//
-//            @Override
-//            public void onDrawerClosed(View drawerView) {
-//                super.onDrawerClosed(drawerView);
-//                // Code here will execute once drawer is closed
-//            }
-//
-//
-//        }; // Drawer Toggle Object Made
-//        Drawer.setDrawerListener(mDrawerToggle); // Drawer Listener set to the Drawer toggle
-//        //mDrawerToggle.syncState();               // Finally we set the drawer toggle sync State
 
     }
 }
